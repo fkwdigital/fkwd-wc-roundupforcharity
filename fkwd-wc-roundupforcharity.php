@@ -5,7 +5,7 @@
  * Description:       Adds a checkbox to the WooCommerce checkout to allow a user to "round up" their order total to the nearest dollar. Report is generated that you can use to manually send to a charity at your choice of interval.
  * Version:           0.1.0
  * Requires at least: 6.7
- * Requires PHP:      8.2
+ * Requires PHP:      8.0
  * Author:            FKW Digital
  * License:           GPL-3.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
