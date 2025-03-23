@@ -3,7 +3,7 @@
  * Plugin Name:       FKWD WC Roundup for Charity
  * Plugin URI:        https://fkwdigital.com/wordpress
  * Description:       Adds a checkbox to the WooCommerce checkout to allow a user to "round up" their order total to the nearest dollar. Report is generated that you can use to manually send to a charity at your choice of interval.
- * Version:           0.1.0
+ * Version:           0.1.1
  * Requires at least: 6.7
  * Requires PHP:      8.0
  * Author:            FKW Digital

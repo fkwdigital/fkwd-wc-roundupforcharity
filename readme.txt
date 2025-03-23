@@ -34,6 +34,10 @@ For basic usage, have a look at the [plugin's website for documentation](https:/
 
 For more information, see [Releases](https://fkwdigital.com/category/fkwd-wc-roundupforcharity/).
 
-= 1.0.0 =
+= 0.1.1 =
+
+https://github.com/fkwdigital/fkwd-wc-roundupforcharity/releases/tag/0.1.1
+
+= 0.1.0 =
 
 Initial build.
