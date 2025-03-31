@@ -79,8 +79,7 @@ class WooCommerce extends Base
         // check if post_data is available and parse it.
         if ( isset( $_POST['post_data'] ) ) {
             parse_str( $_POST['post_data'], $parsed_data );
-            $round_up_classic = isset( $parsed_data[ FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee' ] ) && 
-                                $parsed_data[ FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee' ] == '1';
+            $round_up_classic = isset( $parsed_data[ FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee' ] ) && $parsed_data[ FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee' ] == '1';
         }
         
         // if not found, check the session.
