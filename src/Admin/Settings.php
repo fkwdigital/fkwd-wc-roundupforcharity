@@ -215,6 +215,20 @@ class Settings extends Base
                     }
                 }
 
+                if( !empty( $section['section_details']['after_section'] ) )
+                {
+                    $field = [
+                        $section['section_id'] . '_after',
+                        '',
+                        [ &$this, 'add_section_after' ],
+                        $this->page_id,
+                        $section['section_id'],
+                        $section['section_details']['after_section']
+                    ];
+
+                    add_settings_field( ...$field );
+                }
+
                 $class = $section['section_details']['class'];
 
                 if ( !empty( $class ) )
@@ -263,14 +277,12 @@ class Settings extends Base
 
     }
 
-    /**
-     * Renders a section's description above the fields.
-     *
-     * @param mixed $description The description of the section.
-     * @return string Returns the rendered section.
-     */
-    public static function render_section( $description = NULL ) {
-        return !empty( $description ) ? esc_html__( $description, FKWD_PLUGIN_WCRFC_NAMESPACE ) : '';
+    public static function add_section_after( $after_section ) {
+        if( empty( $after_section['content'] ) ) {
+            return;
+        }
+
+        echo wp_kses_post( $after_section['content'] );
     }
 
     /**

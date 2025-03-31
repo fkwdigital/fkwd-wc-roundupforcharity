@@ -10,8 +10,8 @@
             // access all potential existing form values
             settings_fields( $this->page_id );
             // loop through and display all potential field options
-            do_settings_sections( $this->page_id ); ?>
-            <button class="<?php echo FKWD_PLUGIN_WCRFC_NAMESPACE ?>-roundup-report-button <?php echo FKWD_PLUGIN_WCRFC_NAMESPACE ?>-buttons button button-secondary">Run Report <span class="spinner"></span></button>
+            do_settings_sections( $this->page_id );
+            submit_button( __( 'Save Settings', FKWD_PLUGIN_WCRFC_NAMESPACE ) ); ?>
         <hr>
         <?php do_action( FKWD_PLUGIN_WCRFC_NAMESPACE . '_add_' . $this->page_id . '_form_html' ); ?>
     </form>
