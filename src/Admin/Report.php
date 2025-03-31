@@ -31,7 +31,6 @@ class Report extends Base
         // adds method to support ajax action to resend missing backleads
         add_action( 'wp_ajax_roundup_report', [ $this, 'handle_roundup_report' ] );
         add_action( 'wp_ajax_nopriv_roundup_report', [ $this, 'handle_roundup_report' ] );
-        add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', [ $this, 'handle_query_roundupfee' ], 10, 2 );
     }
 
     /**
@@ -179,16 +178,5 @@ class Report extends Base
         }
 
         return $options;
-}
-
-    public function handle_query_roundupfee( $query, $query_vars ) {
-        if ( ! empty( $query_vars['roundupfee'] ) ) {
-            $query['meta_query'][] = array(
-                'key' => 'roundupfee',
-                'value' => esc_attr( $query_vars['customvar'] ),
-            );
-        }
-    
-        return $query;
     }
 }
