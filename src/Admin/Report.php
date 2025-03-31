@@ -19,6 +19,13 @@ class Report extends Base
 
     }
 
+    /**
+     * Initializes the Report class.
+     * 
+     * Adds the necessary actions to support the AJAX request for the report.
+     * 
+     * @return void
+     */
     public function init() 
     {
         // adds method to support ajax action to resend missing backleads
@@ -26,6 +33,15 @@ class Report extends Base
         add_action( 'wp_ajax_nopriv_roundup_report', [ $this, 'handle_roundup_report' ] );
     }
 
+    /**
+     * Handles the AJAX request for the report.
+     * 
+     * This function runs a SQL query to get the total number of orders and the total
+     * rounded up amount for the given month. It also handles the case where the
+     * month is not provided.
+     * 
+     * @return void
+     */
     public function handle_roundup_report() {
         check_ajax_referer( FKWD_PLUGIN_WCRFC_NAMESPACE . '_nonce', 'nonce' );
 
@@ -51,7 +67,17 @@ class Report extends Base
         }
     }
 
-
+    /**
+     * Retrieves the total orders and total roundup amount for the given month.
+     *
+     * This function looks at orders with a `wc-completed` or `wc-processing` status
+     * and orders that have a `_round_up_fee_amount` meta value set. It then returns
+     * an object with two properties: `total_orders` and `total_roundup`.
+     *
+     * @param string $year_month The month for which to retrieve the total orders
+     *                            and total roundup amount.
+     * @return object|null An object with two properties: `total_orders` and `total_roundup`.
+     */
     public function get_monthly_total_roundup( $year_month = NULL ) {
         global $wpdb;
 
@@ -72,8 +98,8 @@ class Report extends Base
         $end_date = $date_obj->format( 'Y-m-t' );
 
         $sql =  "SELECT COUNT(DISTINCT `o`.`id`) as `total_orders`, SUM(`om`.`meta_value`) as `total_roundup`
-            FROM `wp_wc_orders` as `o`
-            JOIN `wp_wc_orders_meta` as `om`
+            FROM `{$wpdb->prefix}wc_orders` as `o`
+            JOIN `{$wpdb->prefix}wc_orders_meta` as `om`
             WHERE `o`.`type` = %s
             AND `o`.`status` IN (%s, %s)
             AND `o`.`date_created_gmt` BETWEEN %s AND %s

@@ -1,8 +1,6 @@
 <?php
 namespace Fkwd\Plug\Wcrfc;
 
-//use Fkwd\Plug\Admin;
-
 /**
  * Class Main
  *
@@ -32,8 +30,12 @@ class WooCommerce extends Base
      * @return void
      */
     public function charity_round_up_checkbox() {
+        $data = get_option( FKWD_PLUGIN_WCRFC_NAMESPACE . '_roundupreport_database_settings' );
+
+        $checkbox_description = wp_kses_post( $data['roundup_description'] ) ?? 'Round up to the nearest dollar for charity.';
+
         echo '<p class="form-row form-row-wide ' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee">
-            <label><input type="checkbox" name="' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee" id="' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee_input" value="1" /> <span>Round up to the nearest dollar for <a href="https://looseends.org/how-this-works" target="_blank">Loose Ends</a>, a charity project that matches volunteer handwork finishers with textile projects people have left undone due to death or disability.</span></label>
+            <label><input type="checkbox" name="' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee" id="' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee_input" value="1" /> <span>' . $checkbox_description . '</span></label>
                 <input type="hidden" id="' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_roundup_fee_amount" name="' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_roundup_fee_amount" value="0" />
             </p>';
     }
@@ -46,8 +48,11 @@ class WooCommerce extends Base
      * @return void
      */
     public function fkwd_save_roundup_in_session( $posted_data ) {
-        parse_str( $posted_data, $parsed_data );
-        if ( isset( $parsed_data[ FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee' ] ) && $parsed_data[ FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee' ] == '1' ) {
+        if( is_string( $posted_data ) ) {
+            parse_str( $posted_data, $posted_data );
+        }
+
+        if ( isset( $posted_data[ FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee' ] ) && $posted_data[ FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee' ] == '1' ) {
             WC()->session->set( FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee', true );
         } else {
             WC()->session->set( FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee', false );

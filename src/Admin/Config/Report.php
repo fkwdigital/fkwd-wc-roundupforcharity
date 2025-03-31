@@ -12,6 +12,15 @@ class Report extends Config implements Feature {
 		parent::__construct();
     }
 
+    /**
+     * Initialize the report admin page.
+     * 
+     * This function sets up the report admin page by setting the page settings id, database settings id, parent page id, option menu type, option page title, option menu title, and option capability.
+     * It also adds a settings section to the report admin page with the fields to select the month to generate the report.
+     * 
+     * @throws \Exception
+     * @return $this
+     */
 	public function init()
 	{
 		try {
@@ -27,6 +36,20 @@ class Report extends Config implements Feature {
 					->set_option_menu_title( __( 'Round Up Report', FKWD_PLUGIN_WCRFC_NAMESPACE ) )
 					->set_option_capability( 'manage_woocommerce' );
 
+                $description_settings_section = [
+                    'section_title' => 'Checkout Description',
+                    'section_description' => 'The description next to the round up checkbox in WooCommerce checkout.',
+                    'fields' => [
+                        [
+                            'label_for' => 'roundup_description',
+                            'title' => 'Round Up Description:',
+                            'description' => 'Plain text only.',
+                            'type' => 'text',
+                        ],
+                    ],
+                    'class' => 'Fkwd\Plug\Wcrfc\Admin\Report'
+                ];
+                
                 $report_settings_section = [
                     'section_title' => 'Select Month to Generate Report',
                     'section_description' => 'Generates a round up report of the month selected. Defaults to the current month. Only months that have associated round up orders will appear in the dropdown.',
@@ -38,8 +61,17 @@ class Report extends Config implements Feature {
                             'type' => 'select',
                         ],
                     ],
+                    'after_section' => [
+                        'content' => '<button class="' . FKWD_PLUGIN_WCRFC_NAMESPACE . '-roundup-report-button ' . FKWD_PLUGIN_WCRFC_NAMESPACE . '-buttons button button-secondary">Run Report <span class="spinner"></span></button>'
+                    ],
                     'class' => 'Fkwd\Plug\Wcrfc\Admin\Report'
                 ];
+
+                $this->set_section(
+                    FKWD_PLUGIN_WCRFC_NAMESPACE . '_settings_form_section_roundupdescription',
+                    FKWD_PLUGIN_WCRFC_NAMESPACE . '_settings_form_section_roundupdescription_fields',
+                    $description_settings_section
+                );
 
                 $this->set_section(
                     FKWD_PLUGIN_WCRFC_NAMESPACE . '_settings_form_section_roundupreport',
@@ -63,24 +95,6 @@ class Report extends Config implements Feature {
 
 	public function get_enabled(): bool
 	{
-		// try {
-		// 	if( !empty( get_option( FKWD_PLUGIN_WCRFC_NAMESPACE . '_memberful_token' ) ) )
-		// 	{
-		// 		return true;
-		// 	}
-		// } catch ( \Exception $e ) {
-		// 	// log the error
-		// 	error_log($e->getMessage());
-		// 	// display an admin error notice in WordPress
-		// 	add_action('admin_notices', function() use ($e) {
-		// 		
-		// 		<div class="notice notice-error">
-		// 			<p><?php echo esc_html($e->getMessage());</p>
-		// 		</div>
-		// 		
-		// 	});
-		// }
-
 		return true;
 	}
 }
