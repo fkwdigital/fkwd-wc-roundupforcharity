@@ -122,8 +122,6 @@ class Report extends Base
         $order_query = new \WC_Order_Query;
 
         $order_query->set( 'status', array( 'wc-completed', 'wc-processing' ) );
-        $order_query->set( 'order', 'ASC' );
-        $order_query->set( 'orderby', 'date_created' );
 
         $orders = $order_query->get_orders();
 
