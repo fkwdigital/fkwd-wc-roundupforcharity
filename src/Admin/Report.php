@@ -55,13 +55,8 @@ class Report extends Base
 
         $result = $this->get_monthly_total_roundup( $month );
 
-        if( empty( $result ) ) {
-            $result->total_orders = 0; 
-            $result->total_roundup = 0;
-        }
-
         if( !empty( $result ) ) {
-            wp_send_json_success( [ 'success' => true, 'total_orders' => $result->total_orders, 'total_roundup' => $result->total_roundup ] );
+            wp_send_json_success( [ 'success' => true, 'total_orders' => $result['total_orders'], 'total_roundup' => $result['total_roundup'] ] );
         } else {
             wp_send_json_error( [ 'message' => 'Report running failed.' ] );
         }
@@ -79,10 +74,6 @@ class Report extends Base
      * @return object|null An object with two properties: `total_orders` and `total_roundup`.
      */
     public function get_monthly_total_roundup( $year_month = NULL ) {
-        global $wpdb;
-
-        $return = NULL;
-
         if( empty( $year_month ) ) {
             $year_month = date( 'Y-m' );
         }
@@ -91,78 +82,61 @@ class Report extends Base
         if (!$date_obj) {
             $this->send_log( 'generate_monthly_report', FKWD_PLUGIN_WCRFC_NAMESPACE . ': Datetime provided in a non-valid format.', get_current_user_id() );
             error_log( FKWD_PLUGIN_WCRFC_NAMESPACE . ': Datetime provided in a non-valid format.' );
-            return $return;
+            return;
         }
 
         $start_date = $date_obj->format( 'Y-m-01' );
         $end_date = $date_obj->format( 'Y-m-t' );
 
-        $sql =  "SELECT COUNT(DISTINCT `o`.`id`) as `total_orders`, SUM(`om`.`meta_value`) as `total_roundup`
-            FROM `{$wpdb->prefix}wc_orders` as `o`
-            JOIN `{$wpdb->prefix}wc_orders_meta` as `om`
-            WHERE `o`.`type` = %s
-            AND `o`.`status` IN (%s, %s)
-            AND `o`.`date_created_gmt` BETWEEN %s AND %s
-            AND `om`.`meta_key` = %s";
+        $order_query = new \WC_Order_Query;
 
-        $query = $wpdb->prepare( $sql,
-            'shop_order',
-            'wc-completed',
-            'wc-processing',
-            $start_date,
-            $end_date,
-            '_' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee_amount'
-        );
+        $order_query->set( 'status', array( 'wc-completed', 'wc-processing' ) );
+        $order_query->set( 'date_created', $start_date . '...' . $end_date );
 
-        $total_round_up = $wpdb->get_row( $query );
+        $orders = $order_query->get_orders();
 
-        if( !empty( $total_round_up ) ) {
-            $return = $total_round_up;
+        $order_count = 0;
+        $total_fees = 0.00;
+
+        foreach ( $orders as $order ) {
+            $fees = $order->get_total_fees();
+
+            if( $fees > 0 ) {
+                $order_count++;
+                $total_fees += $fees;
+            }
         }
 
-        return $return;
+        return array( 'total_orders' => $order_count, 'total_roundup' => floatval( $total_fees ) ); 
     }
 
     /**
      * Retrieves an array of available months for generating a report.
      *
-     * This function looks at orders with a `wc-completed` or `wc-processing` status
-     * and orders that have a `_round_up_fee_amount` meta value set. It then
+     * This function looks at orders with a `wc-completed` or `wc-processing` status. It then
      * returns an array of the distinct months where such orders exist.
      *
      * @return array An array of strings in the format 'YYYY-MM'.
      */
     public function get_available_months(): array {
-        global $wpdb;
+        $order_query = new \WC_Order_Query;
 
-        $return = [ date( 'Y-m' ) ];
-    
-        // Query distinct months from shop orders with relevant statuses.
-        $query = "
-            SELECT DISTINCT DATE_FORMAT(p.post_date, '%Y-%m') as month
-            FROM {$wpdb->posts} p
-            INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-            WHERE pm.meta_key = %s
-            AND p.post_type = %s
-            AND p.post_status IN (%s, %s)
-            ORDER BY month DESC
-        ";
-    
-        $prepared_query = $wpdb->prepare(
-            $query,
-            '_' . FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee_amount',
-            'shop_order',
-            'wc-completed',
-            'wc-processing'
-        );
-    
-        $results = $wpdb->get_col( $prepared_query );
-        
-        if ( ! empty( $results ) ) {
-            $return = $results;
+        $order_query->set( 'status', array( 'wc-completed', 'wc-processing' ) );
+
+        $orders = $order_query->get_orders();
+
+        $months_with_fees = [ date( 'Y-m' ) ];
+
+        foreach( $orders as $order ) {
+            $fees = $order->get_total_fees();
+            $date_created = date( 'Y-m', strtotime( $order->get_date_created() ) );
+
+            if( $fees > 0 && !in_array( $date_created, $months_with_fees ) ) {
+                $months_with_fees[] = $date_created;
+            }
         }
-    
-        return $return;
+
+        return $months_with_fees;
     }
 
     /**
@@ -180,7 +154,10 @@ class Report extends Base
      * @return void
      */
     public function get_available_options( $field ) {
-        $field_name = $field ?? 'report_month';
+        if( empty( $field ) && empty( $field['label_for'] ) && $field['label_for'] != 'report_month' ) {
+            return;
+        }
+
         $options = [
             'default' => [
                 'value' => date( 'F Y' ),
