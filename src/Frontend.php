@@ -1,7 +1,7 @@
 <?php
-namespace Fkwd\Plug\Wcrfc;
+namespace Fkwd\Plugin\Wcrfc;
 
-use Fkwd\Plug\Wcrfc\Admin\Settings;
+use Fkwd\Plugin\Wcrfc\Admin\Settings;
 
 /**
  * Class Frontend

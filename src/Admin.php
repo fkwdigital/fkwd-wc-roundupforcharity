@@ -1,14 +1,20 @@
 <?php
-namespace Fkwd\Plug\Wcrfc;
+namespace Fkwd\Plugin\Wcrfc;
 
-use Fkwd\Plug\Wcrfc\Admin\Settings;
+use Fkwd\Plugin\Wcrfc\Utils\Discovery;
+use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
 
 /**
  * Class Admin
  *
- * @package fkwdwcrfc/src
+ * @package fkwdassess/src
  */
-class Admin extends Base {
+class Admin
+{
+    use Singleton;
+
+    /** @var array $features List of features registered in the admin. */
+    private $features = [];
     /**
      * Constructor.
      *
@@ -24,56 +30,27 @@ class Admin extends Base {
      */
     public function init() {
         // enqueue admin assets
-        add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_files' ] );
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_assets']);
 
-        // adds plugin action links
-        add_action( 'plugin_action_links', [ $this, 'add_plugin_page_action_links' ], 10, 2 );
-
-        // create admin settings pages
-        $this->create_admin_pages();
+        // register plugin feature classes
+        add_action('init', [$this, 'register_features'], 1);
     }
 
     /**
-     * Create admin pages and initialize them.
+     * Registers and initializes features discovered in the specified configuration directory.
+     *
+     * This function discovers features within the provided configuration directory and namespace,
+     * initializes them if they are enabled, and configures associated settings.
+     *
+     * @return void
      */
-    public function create_admin_pages() {
-        // create admin settings pages
-        $pages = [
-            'report' => [
-                'config' => new Admin\Config\Report,
-                'dependencies' => []
-            ],
-        ];
+    public function register_features()
+    {
+        $config_dir       = FKWD_PLUGIN_WCRFC_DIR_PATH . 'src/Admin/Features';
+        $config_namespace = 'Fkwd\\Plugin\\Wcrfc\\';
+        $config_features  = 'Admin\\Features\\';
 
-        foreach ( $pages as $page_id => $options ) {
-            $activate = false;
-
-            // make sure all other plugin dependencies are met
-            if( !empty( $options['dependencies'] ) ) {
-                foreach( $options['dependencies'] as $dependency ) {
-                    if( is_plugin_active( $dependency ) ) {
-                        $activate = true;
-                    }
-                }
-            } else {
-                $activate = true;
-            }
-
-            if( !$activate ) {
-                continue;
-            }
-
-            // create a new config class for this feature
-            $config = $options['config'];
-            $config->init();
-
-            // if optional field sections/fields are set, provide them otherwise set to null
-            $sections = $config->sections ?? NULL;
-
-            // create a new settings page using wordpress admin options class
-            $settings = new Settings;
-            $settings->configure( $config->ids, $config->options, $sections );
-        }
+        $this->features = Discovery::discover($config_dir, $config_namespace, $config_features);
     }
 
     /**
@@ -81,7 +58,7 @@ class Admin extends Base {
      *
      * @return void
      */
-    public function enqueue_files() 
+    public function enqueue_assets() 
     {
         wp_enqueue_style( FKWD_PLUGIN_WCRFC_NAMESPACE  .  '-admin-style', FKWD_PLUGIN_WCRFC_DIR_URL .  'assets/dist/css/admin.css', [], FKWD_PLUGIN_WCRFC_VERSION, 'all' );
         wp_enqueue_script( FKWD_PLUGIN_WCRFC_NAMESPACE . '-admin-script', FKWD_PLUGIN_WCRFC_DIR_URL .  'assets/dist/scripts/admin.min.js', [ 'jquery' ], FKWD_PLUGIN_WCRFC_VERSION, true );
@@ -89,18 +66,5 @@ class Admin extends Base {
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce'    => wp_create_nonce( FKWD_PLUGIN_WCRFC_NAMESPACE . '_nonce' ),
         ] );
-    }
-
-    public function add_plugin_page_action_links( $links, $file ) 
-    {            
-        if ( !is_admin() || ( !empty( $file ) && $file != FKWD_PLUGIN_WCRFC_NAMESPACE ) ) {
-			return $links;
-        }
-
-        $settings_url = esc_url( add_query_arg( 'page', FKWD_PLUGIN_WCRFC_NAMESPACE . '_roundup_report', admin_url( 'admin.php' ) ) );
-
-		array_unshift( $links, '<a href="' . $settings_url . '">' . esc_html__( 'Reports', FKWD_PLUGIN_WCRFC_NAMESPACE ) . '</a>' );
-
-		return $links;
     }
 }

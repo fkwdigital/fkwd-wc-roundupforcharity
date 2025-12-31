@@ -1,0 +1,12 @@
+// Variables
+@use "../configs/var" as var;
+
+// Mixins
+@use "../configs/mixin" as mixin;
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}

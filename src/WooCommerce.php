@@ -1,5 +1,5 @@
 <?php
-namespace Fkwd\Plug\Wcrfc;
+namespace Fkwd\Plugin\Wcrfc;
 
 /**
  * Class Main

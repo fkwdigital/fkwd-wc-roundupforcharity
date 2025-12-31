@@ -1,0 +1,134 @@
+@charset "utf-8";
+
+// Variables
+@use "configs/var" as var;
+
+// Mixins
+@use "configs/mixin" as mixin;
+
+$plugin_name: "fkwdwcrfc";
+
+#dashboard-widgets {
+    display: none;
+}
+
+#wpfooter #footer-upgrade {
+    display: none !important;
+}
+
+##{$plugin_name}_settings_form {
+    padding: 1.5rem;
+
+    .#{$plugin_name}-buttons {
+        .spinner {
+            display: none;
+
+            &.is-active {
+                display: inline-block;
+            }
+        }
+    }
+
+    .#{$plugin_name}-ajax-alerts {
+        display: none;
+
+        p {
+            font-size: 1.15rem;
+        }
+
+        .#{$plugin_name}-buttons {
+            display: flex;
+        }
+    }
+
+    .form-table {
+        td {
+            font-size: 1rem;
+            line-height: 2rem;
+
+            @include mixin.bp(desktop) {
+                font-size: 1rem;
+                line-height: 1.4rem;
+            }
+
+            .description {
+                display: block;
+                font-size: 1rem;
+                padding: 0 0 0.8rem;
+            }
+
+            > p {
+                margin-top: -5px;
+            }
+
+            > br {
+                display: none;
+            }
+        }
+
+        .fields-group {
+            border-bottom: 1px solid #ccc;
+            margin: 0 0 1.25rem;
+            padding: 0 0 1.25rem;
+
+            &.fields-group-1 {
+                span {
+                    &.remove {
+                        display: none;
+                    }
+                }
+            }
+
+            &:last-child {
+                border: 0;
+            }
+
+            .field {
+                padding: 0 0 0.6rem;
+            }
+
+            .#{$plugin_name}-field {
+                margin: 0.8rem 0;
+
+                input {
+                    margin: 3px 0;
+                }
+            }
+        }
+    }
+}
+
+.#{$plugin_name}-roundup-report-table {
+    background: #ffffff;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    clear: both;
+    display: none;
+    font-size: 1rem;
+    max-width: 768px;
+    padding: 0.75rem;
+    width: 100%;
+
+    &.is-active {
+        display: block;
+    }
+
+    th {
+        padding: 1rem;
+        border-right: 1px solid #c3c4c7;
+        border-bottom: 1px solid #c3c4c7;
+
+        &:last-child {
+            border-right: 0;
+        }
+    }
+
+    td {
+        color: #0c550c;
+        padding: 1rem;
+
+        &:first-child {
+            text-align: right;
+        }
+    }
+}

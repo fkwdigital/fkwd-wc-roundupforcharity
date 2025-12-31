@@ -1,0 +1,22 @@
+{
+  "name": "fkwd/wcrfc",
+  "description": "Composer dependencies for FKWD WordPress plugin - FKWD WC Round Up for Charity.",
+  "type": "project",
+  "require": {
+    "vlucas/phpdotenv": "^5.5"
+  },
+  "require-dev": {
+    "vlucas/phpdotenv": "^5.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Fkwd\\Plugin\\Wcrfc\\": "./src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Christina Gleason",
+      "email": "chris@fkwdigital.com"
+    }
+  ]
+}
