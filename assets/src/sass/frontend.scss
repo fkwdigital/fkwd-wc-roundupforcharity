@@ -1,0 +1,23 @@
+@charset "utf-8";
+@use "configs/var" as *;
+@use "configs/mixin" as *;
+
+.#{$plugin_name}-round-up-fee {
+	background: #dcd7e3;
+	padding: 1rem !important;
+
+	label {
+		align-items: flex-start;
+		display: flex !important;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		line-height: 1.5 !important;
+
+		input[type="checkbox"],
+		input[type="radio"] {
+			margin: 1rem 1rem 0 0 !important;
+			transform: scale(1.5);
+		}
+	}
+}

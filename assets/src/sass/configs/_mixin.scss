@@ -1,0 +1,47 @@
+// Variables
+@use "configs/var" as var;
+
+@mixin bp($point) {
+    @if $point == smallmobile {
+        @media (min-width: var.$break-xsmall) {
+            @content;
+        }
+    } @else if $point == mobile {
+        @media (min-width: var.$break-small) {
+            @content;
+        }
+    } @else if $point == tablet {
+        @media (min-width: var.$break-medium) {
+            @content;
+        }
+    } @else if $point == desktop {
+        @media (min-width: var.$break-large) {
+            @content;
+        }
+    } @else if $point == largedesktop {
+        @media (min-width: var.$break-xlarge) {
+            @content;
+        }
+    } @else if unit($point) == "px" {
+        @media (min-width: $point) {
+            @content;
+        }
+    } @else {
+        @warn "Make sure you are using the correct variables defined in bp mixin - smallmobile, mobile, tablet, desktop, largedesktop, or a number defined in pixels";
+    }
+}
+
+@mixin columns($number, $gap) {
+    column-count: $number;
+    column-gap: $gap;
+}
+
+@mixin fade() {
+    transition: all 0.2s ease;
+}
+
+@mixin container() {
+    margin: 0 auto;
+    max-width: var.$break-xlarge;
+    width: 100%;
+}

@@ -1,0 +1,113 @@
+// Variables
+@use "configs/var" as var;
+
+// Mixins
+@use "configs/mixin" as mixin;
+
+::placeholder {
+    color: var(--bvi--color--gray);
+}
+
+::-ms-expand {
+    display: none;
+}
+
+form {
+    margin: var(--bvi--margin-center-size);
+    padding: var(--bvi--padding-topbottom-size) var(--bvi--padding-rightleft);
+    position: relative;
+    max-width: var.$break-small;
+    width: 100%;
+
+    @include mixin.bp(tablet) {
+        max-width: var.$break-medium;
+    }
+
+    @include mixin.bp(desktop) {
+        max-width: var.$break-large;
+    }
+
+    @include mixin.bp(largedesktop) {
+        max-width: var.$break-xlarge;
+    }
+
+    p {
+        display: block;
+        font-weight: 700;
+        padding: 0 0 calc(var(--bvi--padding-topbottom-size) / 2);
+        position: relative;
+        width: 100%;
+
+        @include mixin.bp(desktop) {
+            padding: 0 0 var(--bvi--padding-topbottom-size);
+        }
+
+        &:last-child {
+            @include mixin.bp(tablet) {
+                display: flex;
+                justify-content: center;
+                padding: 0;
+            }
+        }
+    }
+
+    input[type="submit"] {
+        background: var(--bvi--button-bg-color);
+        border: 0;
+        border-radius: var(--bvi--border-radius);
+        color: var(--bvi--color--white);
+        cursor: pointer;
+        font-family: var(--bvi--heading-font);
+        font-size: 1.2rem;
+        font-weight: 400;
+        line-height: 24px;
+        letter-spacing: 1px;
+        margin: 0;
+        max-width: 320px;
+        padding: 0.5rem 0.75rem;
+        text-align: center;
+        text-transform: capitalize;
+        width: 100%;
+
+        &:hover {
+            background: var(--bvi--button-bg-color-hover);
+            color: var(--bvi--color--black);
+            @include mixin.fade();
+        }
+    }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="url"] {
+        border: 0;
+        color: var(--bvi--color--gray);
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 400;
+        margin: 10px 0;
+        outline: none;
+        padding: 0.5rem 0.75rem;
+        width: 100%;
+
+        @include mixin.bp(desktop) {
+            padding: 0.8rem 0.75rem;
+        }
+    }
+
+    textarea {
+        height: 140px;
+        padding: 10px;
+        resize: vertical;
+    }
+
+    select {
+        text-overflow: "";
+        text-indent: 0.01px;
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+        margin: 0 0.5rem 0 0;
+    }
+}

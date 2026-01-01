@@ -1,15 +1,22 @@
 <?php
-namespace Fkwd\Plug\Wcrfc;
+namespace Fkwd\Plugin\Wcrfc;
 
-//use Fkwd\Plug\Admin;
+use Fkwd\Plugin\Wcrfc\Admin;
+use Fkwd\Plugin\Wcrfc\Frontend;
+use Fkwd\Plugin\Wcrfc\WooCommerce;
+use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
+use Fkwd\Plugin\Wcrfc\Utils\Traits\Strings;
 
 /**
  * Class Main
  *
  * @package fkwdwcrfc/src
  */
-class Main extends Base
+class Main
 {
+    use Singleton;
+    use Strings;
+
     /**
      * Constructor
      *
@@ -17,7 +24,18 @@ class Main extends Base
      */
     public function __construct()
     {
+        Admin::get_instance();
 
+        Frontend::get_instance();
+
+        WooCommerce::get_instance();
+    }
+
+    public function init() 
+    {
+        if( $this->check_plugin_dependencies() === false ) {
+            return;
+        }
     }
 
     /**
@@ -55,18 +73,6 @@ class Main extends Base
     }
 
     /**
-     * Initializes the PHP class functionality.
-     *
-     * @return void
-     */
-    public function init()
-    {
-        if( $this->check_plugin_dependencies() === false ) {
-            return;
-        }
-    }
-
-    /**
      * Check plugin dependencies and deactivate if necessary.
      *
      * This function checks if the 'memberful-wp' plugin is activated. If it is not,
@@ -78,19 +84,19 @@ class Main extends Base
     public function check_plugin_dependencies()
     {
         // include the plugin.php file to use is_plugin_active
-        if ( ! function_exists( 'is_plugin_active' ) ) {
-            require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+        if (!function_exists('is_plugin_active')) {
+            require_once(ABSPATH . 'wp-admin/includes/plugin.php');
         }
 
-        // check if the memberful-wp plugin is activated
-        if ( ! is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+        // check if the woocommerce plugin is activated
+        if (!is_plugin_active('woocommerce/woocommerce.php')) {
             // set a transient to show the admin notice on the next admin page load
-            update_option( FKWD_PLUGIN_WCRFC_NAMESPACE . '_activation_failed', true );
+            update_option(FKWD_PLUGIN_WCRFC_NAMESPACE . '_activation_failed', true);
 
             return false;
         } else {
             // clear the flag if WooCommerce is active
-            delete_option( FKWD_PLUGIN_WCRFC_NAMESPACE . '_activation_failed' );
+            delete_option(FKWD_PLUGIN_WCRFC_NAMESPACE . '_activation_failed');
         }
 
         return true;
@@ -116,6 +122,10 @@ class Main extends Base
     private function install_database_tables()
     {
         global $wpdb;
+
+        if(empty($wpdb)) {
+            return;
+        }
 
         // for tables specific to this plugin
         $db_slug = 'wcrfc';

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit342a183b58a460d4a3e29b6467ae159a
+class ComposerStaticIniteddc90a2662b6f2af4d70f482118049b
 {
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
@@ -29,7 +29,7 @@ class ComposerStaticInit342a183b58a460d4a3e29b6467ae159a
         ),
         'F' => 
         array (
-            'Fkwd\\Plug\\Wcrfc\\' => 16,
+            'Fkwd\\Plugin\\Wcrfc\\' => 18,
         ),
         'D' => 
         array (
@@ -58,7 +58,7 @@ class ComposerStaticInit342a183b58a460d4a3e29b6467ae159a
         array (
             0 => __DIR__ . '/..' . '/graham-campbell/result-type/src',
         ),
-        'Fkwd\\Plug\\Wcrfc\\' => 
+        'Fkwd\\Plugin\\Wcrfc\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -80,9 +80,9 @@ class ComposerStaticInit342a183b58a460d4a3e29b6467ae159a
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit342a183b58a460d4a3e29b6467ae159a::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit342a183b58a460d4a3e29b6467ae159a::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit342a183b58a460d4a3e29b6467ae159a::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticIniteddc90a2662b6f2af4d70f482118049b::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticIniteddc90a2662b6f2af4d70f482118049b::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticIniteddc90a2662b6f2af4d70f482118049b::$classMap;
 
         }, null, ClassLoader::class);
     }

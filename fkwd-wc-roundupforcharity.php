@@ -3,11 +3,13 @@
  * Plugin Name:       FKWD WC Roundup for Charity
  * Plugin URI:        https://fkwdigital.com/wordpress
  * Description:       Adds a checkbox to the WooCommerce checkout to allow a user to "round up" their order total to the nearest dollar. Report is generated that you can use to manually send to a charity at your choice of interval.
- * Version:           0.1.3
- * Requires at least: 6.7
+ * Version:           1.0.0
+ * Requires at least: 6.8
+ * Tested up to:      6.9
  * Requires PHP:      8.0
+ * Stable tag:        1.0.0
  * Author:            FKW Digital
- * License:           GPL-3.0-or-later
+ * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       fkwdwcrfc
  * Update URI:        https://github.com/fkwdigital/fkwd-wc-roundupforcharity
@@ -16,21 +18,20 @@
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // Exit if accessed directly.
+    exit; // exit if accessed directly
 }
- 
 
 /**
  * Plugin constants.
  *
- * @since 1.0.0
+ * @since 0.1.0
  */
 if ( ! defined( 'FKWD_PLUGIN_WCRFC_VERSION' ) ) {
-    define( 'FKWD_PLUGIN_WCRFC_VERSION', '0.1.2' );
+    define( 'FKWD_PLUGIN_WCRFC_VERSION', '1.0.0' );
 }
 
 if ( ! defined( 'FKWD_PLUGIN_WCRFC_DB_VERSION' ) ) {
-    define( 'FKWD_PLUGIN_WCRFC_DB_VERSION', '1.0.0' );
+    define( 'FKWD_PLUGIN_WCRFC_DB_VERSION', '0.1.0' );
 }
 
 if ( ! defined( 'FKWD_PLUGIN_WCRFC_NAME' ) ) {
@@ -50,66 +51,65 @@ if ( ! defined( 'FKWD_PLUGIN_WCRFC_DIR_URL' ) ) {
 }
 
 /**
- * The child theme class autoloader.
+ * Check PHP version requirement
+ *
+ * @since 0.1.0
+ */
+if (version_compare(PHP_VERSION, '8.0', '<')) {
+    add_action('admin_notices', function () {
+        echo '<div class="error"><p>';
+        echo sprintf(
+            esc_html__(FKWD_PLUGIN_WCRFC_NAME . ' requires PHP 8.0 or higher. You are running PHP %s. Please upgrade PHP to use this plugin.', FKWD_PLUGIN_WCRFC_NAMESPACE),
+            PHP_VERSION
+        );
+        echo '</p></div>';
+    });
+
+    return;
+}
+
+/**
+ * Check WordPress version requirement
+ *
+ * @since 0.1.0
+ */
+if (version_compare(get_bloginfo('version'), '6.8', '<')) {
+    add_action('admin_notices', function () {
+        echo '<div class="error"><p>';
+        echo esc_html__(FKWD_PLUGIN_WCRFC_NAME . ' requires WordPress 6.8 or higher. Please upgrade WordPress to use this plugin.', FKWD_PLUGIN_WCRFC_NAMESPACE);
+        echo '</p></div>';
+    });
+
+    return;
+}
+
+/**
+ * The class autoloader.
  *
  * @since 1.0.0
  */
-$plugin_loader = FKWD_PLUGIN_WCRFC_DIR_PATH . '/vendor/autoload.php';
+$plugin_loader =  plugin_dir_path(__FILE__) . '/vendor/autoload.php';
 
-if ( file_exists( $plugin_loader ) ) {
-    require_once( $plugin_loader );
+if (file_exists($plugin_loader)) {
+    require_once($plugin_loader);
 } else {
-    wp_die( 'Cannot locate the ' . FKWD_PLUGIN_WCRFC_NAME . ' plugin autoloader.' );
+    add_action('admin_notices', function () {
+        echo '<div class="error"><p>';
+        echo esc_html__(FKWD_PLUGIN_WCRFC_NAME . ' has had a critical issue. Please contact <a href="mailto:support@fkwdigital.com">the plugin author</a> to resolve this issue.', FKWD_PLUGIN_WCRFC_NAMESPACE);
+        echo '</p></div>';
+    });
 }
 
-/**
- * Activation and deactivation hooks.
- *
- * @since 1.0.0
- */
-register_activation_hook( __FILE__, 'activate_fkwdwcrfc' );
-register_deactivation_hook( __FILE__, 'deactivate_fkwdwcrfc' );
+$main_class = Fkwd\Plugin\Wcrfc\Main::get_instance();
 
 /**
- * Initialize the plugin.
+ * Hooks the code that runs when the plugin is activated
  *
- * @since 1.0.0
  */
-add_action( 'plugins_loaded', 'fkwdwcrfc' );
+register_activation_hook(__FILE__, array( $main_class, 'activate' ));
 
 /**
- * Get the instance of Main class and set up the plugin.
+ * Hooks the code that runs when the plugin is deactivated
  *
- * @since 1.0.0
- * @return Main|null
  */
-function fkwdwcrfc() {
-    $admin = new Fkwd\Plug\Wcrfc\Admin();
-    $admin->init();
-
-    $wc = new Fkwd\Plug\Wcrfc\WooCommerce();
-    $wc->init();
-
-    $frontend = new Fkwd\Plug\Wcrfc\Frontend();
-    $frontend->init();
-
-    return Fkwd\Plug\Wcrfc\Main::get_instance();
-}
-
-/**
- * Activate the plugin.
- *
- * @since 1.0.0
- */
-function activate_fkwdwcrfc() {
-    fkwdwcrfc()->activate();
-}
-
-/**
- * Deactivate the plugin.
- *
- * @since 1.0.0
- */
-function deactivate_fkwdwcrfc() {
-    fkwdwcrfc()->deactivate();
-}
+register_deactivation_hook(__FILE__, array( $main_class, 'deactivate' ));
