@@ -114,7 +114,6 @@ class Registrar
     public function field_callback($args)
     {
         if (! empty($args['renderer']) && method_exists($args['renderer'], 'render_field')) {
-            error_log('found renderer');
             // pass all field args to renderer
             $args['renderer']->render_field($args);
         }

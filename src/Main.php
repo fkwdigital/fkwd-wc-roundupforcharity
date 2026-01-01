@@ -25,6 +25,10 @@ class Main
     public function __construct()
     {
         Admin::get_instance();
+
+        Frontend::get_instance();
+
+        WooCommerce::get_instance();
     }
 
     public function init() 

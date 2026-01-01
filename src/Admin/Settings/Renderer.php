@@ -33,6 +33,7 @@ class Renderer
             'page_id'          => $args['page_id'],
             'page_database_id' => $args['db_id'],
             'parent_page_id'   => $args['parent_page_id'],
+            'page_title'       => $args['page_title'],
             'id'               => $args['id'] ?? ($args['label_for'] ?? null),
             'label'            => $args['title'] ?? '',
             'description'      => $args['description'] ?? '',
@@ -75,13 +76,17 @@ class Renderer
 
         // configure select dropdown fields
         if ($type === 'select') {
-            $selected = false;
+            $selected = '';
 
             if (!empty($options) && is_array($options)) {
-                foreach ($options as $key => $option_value) {
-                    if ($key == $value) {
-                        $selected = $key;
-                    }
+                // use saved value only if it exists in options
+                if (!empty($value) && array_key_exists($value, $options)) {
+                    $selected = $value;
+                } else {
+                    // fallback to default or first option
+                    $selected = !empty($default) && array_key_exists($default, $options) 
+                        ? $default 
+                        : array_key_first($options);
                 }
             }
         }

@@ -132,6 +132,7 @@ class Settings
                     foreach ($section['section_details']['fields'] as &$field) {
                         $field['page_id']        = $this->page_id;
                         $field['parent_page_id'] = $this->parent_page_id;
+                        $field['page_title']     = $this->options['page_title'];
                         $field['db_id']          = $this->db_id;
                         $field['class_name']     = $this->class_name;
                     }

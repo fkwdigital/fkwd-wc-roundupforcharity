@@ -68,50 +68,52 @@ class RoundUpReport implements FeatureInterface
     public function register_new_admin_settings(): object
     {
         try {
-
             $safe_slug      = $this->create_safe_attribute_field_value($this->name);
             // create the ids and class related to this feature
             $slug           = $this->set_slug($safe_slug);
             $page_id        = $this->set_page_id(FKWD_PLUGIN_WCRFC_NAMESPACE . '_' . $slug . '_settings');
             $db_id          = $this->set_db_id(FKWD_PLUGIN_WCRFC_NAMESPACE . '_' . $slug . '_database_settings');
-            $parent_page_id = FKWD_PLUGIN_WCRFC_NAMESPACE . '_general_settings';
+            $parent_page_id = 'woocommerce';
             $class_name     = $this->set_class_name(\Fkwd\Plugin\Wcrfc\Admin\RoundUpReport::class);
-
 
             // set the menu specific settings and options for this feature
             $menu_type      = 'submenu';
-            $page_title     = $this->safe_translation(FKWD_PLUGIN_WCRFC_NAME . ' - Events', FKWD_PLUGIN_WCRFC_NAMESPACE);
-            $menu_title     = $this->safe_translation('Events', FKWD_PLUGIN_WCRFC_NAMESPACE);
+            $page_title     = $this->safe_translation(FKWD_PLUGIN_WCRFC_NAME . ' Settings', FKWD_PLUGIN_WCRFC_NAMESPACE);
+            $menu_title     = $this->safe_translation('Round Up Report', FKWD_PLUGIN_WCRFC_NAMESPACE);
             $submenu_title  = '';
             $menu_icon      = '';
-            $capability     = 'manage_options';
-            $position       = 20;
+            $capability     = 'manage_woocommerce';
+            $position       = 999;
 
             $options = [
                 'menu_type'  => $menu_type,
                 'page_title' => $page_title,
+                'menu_title' => $menu_title,
+                'submenu_title' => $submenu_title,
                 'menu_icon'  => $menu_icon,
                 'capability' => $capability,
                 'class_name' => $class_name,
                 'position'   => $position,
             ];
 
-            if ($menu_title) {
-                $options['menu_title'] = $menu_title;
-            }
-
-            if ($submenu_title) {
-                $options['submenu_title'] = $submenu_title;
-            }
-
-            $sections[] = [
-                'section_id' => FKWD_PLUGIN_WCRFC_NAMESPACE . '_section_event_management',
-                'section_details' => [
-                    'section_title'       => 'Manage Events',
-                    'section_description' => 'Manage in-person event information and tools.',
-                    'fields'              => [],
+            $fields = [
+                [
+                    'label_for' => 'roundup_description',
+                    'title' => 'Checkout Field Label',
+                    'description' => '',
+                    'type' => 'text',
                 ],
             ];
+
+            $sections[] = [
+                'section_id' => FKWD_PLUGIN_WCRFC_NAMESPACE . '_settings_form_section_general',
+                'section_details' => [
+                    'section_title'       => 'General Settings',
+                    'section_description' => 'Configure general options for Roundup for Charity.',
+                    'fields'              => $fields,
+                ],
+            ];
+
 
             // build IDs array for orchestrator
             $ids = [

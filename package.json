@@ -1,12 +1,12 @@
 {
-  "name": "fkwdplugins",
+  "name": "fkwdwcrfc",
   "version": "1.0.0",
   "private": true,
-  "description": "WordPress plugin build for FKWD",
+  "description": "WordPress plugin FKWD WC Round Up For Charity.",
   "author": "FKW Digital",
   "license": "GPL-2.0-or-later",
   "main": "build/index.js",
-    "engines": {
+  "engines": {
     "node": ">=18",
     "npm": ">=9"
   },
@@ -32,12 +32,13 @@
     "@stylistic/stylelint-plugin": "^4.0.0",
     "@wordpress/eslint-plugin": "^21.5.0",
     "@wordpress/prettier-config": "^4.12.0",
-    "@wordpress/scripts": "^31.0.0",
+    "@wordpress/scripts": "^31.1.0",
     "@wordpress/stylelint-config": "^23.8.0",
     "autoprefixer": "^10.4.20",
     "clean-webpack-plugin": "^4.0.0",
+    "critical": "^7.2.1",
     "css-loader": "^7.1.2",
-    "del": "^7.1.0",
+    "del": "^6.1.1",
     "file-loader": "^6.2.0",
     "gulp": "^5.0.0",
     "gulp-clean-css": "^4.3.0",
@@ -69,8 +70,6 @@
     "react-dom": "^18.3.1"
   },
   "overrides": {
-    "terser": "^5.36.0",
-    "@babel/runtime": "^7.26.10",
-    "webpack-dev-server": "^5.2.1"
+    "terser": "^5.36.0"
   }
 }

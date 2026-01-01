@@ -3,17 +3,19 @@ Contributors: geekmenina
 Donate link: https://fkwdigital.com/donate
 Tags: woocommerce, checkout, charity, round up
 Requires at least: 5.9
-Requires PHP: 8.2
-Tested up to: 6.7.2
-Stable tag: 0.1.0
+Requires PHP: 8.0
+Tested up to: 6.9
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Adds a checkbox to the WooCommerce checkout to allow a user to optionally "round up" their order total to the nearest dollar. Report is generated that you can use to manually send to a charity at your choice of interval.
+Adds a checkbox to the WooCommerce classic checkout to allow a user to optionally "round up" their order total to the nearest dollar. Report is generated that you can use to manually send to a charity at your choice of interval.
 
 == Description ==
 
-Adds a checkbox to the WooCommerce checkout to allow a user to "round up" their order total to the nearest dollar. In the admin, it provides a monthly report that you can use to manually send the round up amount to your charity of choice. This plugin does not automatically send the round up to your chosen charity.
+Adds a checkbox to the WooCommerce classic checkout to allow a user to "round up" their order total to the nearest dollar. In the admin, it provides a monthly report that you can use to manually send the round up amount to your charity of choice. This plugin does not automatically send the round up to your chosen charity.
+
+This currently does not support block checkout, but will be added in a future release.
 
 == Installation ==
 

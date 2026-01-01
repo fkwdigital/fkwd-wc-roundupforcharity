@@ -1,13 +1,14 @@
 <?php
 namespace Fkwd\Plugin\Wcrfc;
 
+use Fkwd\Plugin\Wcrfc\Service\Ajax;
 use Fkwd\Plugin\Wcrfc\Utils\Discovery;
 use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
 
 /**
  * Class Admin
  *
- * @package fkwdassess/src
+ * @package fkwdwcrfc/src
  */
 class Admin
 {
@@ -34,6 +35,9 @@ class Admin
 
         // register plugin feature classes
         add_action('init', [$this, 'register_features'], 1);
+
+        // register admin ajax endpoints
+        Ajax::get_instance();
     }
 
     /**

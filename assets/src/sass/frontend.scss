@@ -1,10 +1,8 @@
 @charset "utf-8";
+@use "configs/var" as *;
+@use "configs/mixin" as *;
 
-@use "configs/var";
-
-@use "configs/mixin";
-
-.fkwdwcrfc_round_up_fee {
+.#{$plugin_name}-round-up-fee {
 	background: #dcd7e3;
 	padding: 1rem !important;
 

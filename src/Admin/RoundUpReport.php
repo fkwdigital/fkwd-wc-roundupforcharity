@@ -1,65 +1,77 @@
 <?php
 namespace Fkwd\Plugin\Wcrfc\Admin;
 
-use Fkwd\Plugin\Wcrfc\Base;
+use Fkwd\Plugin\Wcrfc\Service\Ajax;
+use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
+use Fkwd\Plugin\Wcrfc\Utils\Traits\Security;
 
 /**
  * Class Report
  * 
  * @package fkwdwcrfc/src
  */
-class RoundUpReport extends Base 
+class RoundUpReport
 {
+    private $service_ajax;
+    
+    use Security;
+    use Singleton;
+    
     /**
-     * Constructor for the Report class.
+     * Empty constructor.
      *
      * @return void
      */
     public function __construct() {
-
+        $this->service_ajax = Ajax::get_instance();
     }
 
     /**
-     * Initializes the Report class.
-     * 
-     * Adds the necessary actions to support the AJAX request for the report.
+     * Initializes the class.
      * 
      * @return void
      */
     public function init() 
     {
-        // adds method to support ajax action to resend missing backleads
-        add_action( 'wp_ajax_roundup_report', [ $this, 'handle_roundup_report' ] );
-        add_action( 'wp_ajax_nopriv_roundup_report', [ $this, 'handle_roundup_report' ] );
+        // adds the correct roundup fee to queries regarding orders
         add_filter( 'woocommerce_order_data_store_cpt_get_orders_query', [ $this, 'handle_query_roundupfee' ], 10, 2 );
     }
 
     /**
-     * Handles the AJAX request for the report.
-     * 
-     * This function runs a SQL query to get the total number of orders and the total
-     * rounded up amount for the given month. It also handles the case where the
-     * month is not provided.
+     * Handles the AJAX request for generating the report for total fees collected in a month's time.
      * 
      * @return void
      */
     public function handle_roundup_report() {
-        check_ajax_referer( FKWD_PLUGIN_WCRFC_NAMESPACE . '_nonce', 'nonce' );
+        $error_text = 'We were unable to retrieve the report information for the month selected. Please try again later.';
 
-        $data = $_POST;
+        $json_success = false;
+        $json_message = $error_text . ' Error 1E';
+        $json_data = [];
+        $json_return = ['success' => $json_success, 'message' => $json_message, 'data' => $json_data];
+        
+        $this->validate_nonce($_POST);
 
-        if( empty( $data['month'] ) ) {
-            wp_send_json_error( [ 'message' => 'Report running failed; missing required entries.' ] );
-        } else {
-            $month = $data['month'];
+        $data = $this->service_ajax->sanitize_ajax_dashboard_POST(
+            $_POST,
+            [
+                'month' => 'string',
+            ]
+        );
+
+        // cant run the report without a valid date passed
+        if (empty($data['month'])) {
+            $json_return['message'] = $error_text . ' Error 1DN';
+
+            wp_send_json_error($json_return, 200);
         }
 
-        $result = $this->get_monthly_total_roundup( $month );
+        $result = $this->get_monthly_total_roundup( $data );
 
-        if( !empty( $result ) ) {
-            wp_send_json_success( [ 'success' => true, 'total_orders' => $result['total_orders'], 'total_roundup' => $result['total_roundup'] ] );
+        if ($result['success']) {
+            wp_send_json_success($result, 200);
         } else {
-            wp_send_json_error( [ 'message' => 'Report running failed.' ] );
+            wp_send_json_error($result, 200);
         }
     }
 
@@ -73,119 +85,137 @@ class RoundUpReport extends Base
      * @param string $year_month The month for which to retrieve the total orders
      *                            and total roundup amount.
      * @return object|null An object with two properties: `total_orders` and `total_roundup`.
+     * @throws \InvalidArgumentException If the provided year_month is not in the correct format.
      */
-    public function get_monthly_total_roundup( $year_month = NULL ) {
-        if( empty( $year_month ) ) {
-            $year_month = date( 'Y-m' );
+    public function get_monthly_total_roundup($data) 
+    {        
+        $error_text = 'We were unable to retrieve the report information for the month selected. Please try again later.';
+
+        $json_return = [
+            'success' => false,
+            'message' => $error_text . ' Error 1E',
+            'data' => null,
+        ];
+        
+        if (empty($data['month'])) {
+            $json_return['message'] = $error_text . ' Error 1DN';
+
+            return $json_return;
         }
 
-        $date_obj = \DateTime::createFromFormat( 'Y-m', $year_month );
-        if (!$date_obj) {
-            $this->send_log( 'generate_monthly_report', FKWD_PLUGIN_WCRFC_NAMESPACE . ': Datetime provided in a non-valid format.', get_current_user_id() );
-            error_log( FKWD_PLUGIN_WCRFC_NAMESPACE . ': Datetime provided in a non-valid format.' );
-            return;
+        // this has already been cleaned in the previous function, so set it for ease of use
+        $reporting_month = $data['month'];
+
+        // validate the year-month only format
+        $date = \DateTime::createFromFormat('Y-m-d', $reporting_month);
+
+        if (!$date || $date->format('Y-m-d') !== $reporting_month) {
+            $json_return['message'] = $error_text . ' Error 1DF';
+
+            return $json_return;
         }
 
-        $start_date = $date_obj->format( 'Y-m-01' );
-        $end_date = $date_obj->format( 'Y-m-t' );
+        $start_date = $date->format('Y-m-01');
+        $end_date = $date->format('Y-m-t');
 
-        $order_query = new \WC_Order_Query;
-
-        $order_query->set( 'status', array( 'wc-completed', 'wc-processing' ) );
-        $order_query->set( 'date_created', $start_date . '...' . $end_date );
+        $order_query = new \WC_Order_Query([
+            'status' => ['wc-completed', 'wc-processing'],
+            'date_created' => $start_date . '...' . $end_date,
+            'limit' => -1,
+        ]);
 
         $orders = $order_query->get_orders();
+
+        if (empty($orders)) {
+            $json_return['success'] = true;
+            $json_return['message'] = 'Report generated successfully, but no orders were found.';
+            $json_return['data'] = [
+                'total_orders' => 0,
+                'total_roundup' => 0.00,
+            ];
+            return $json_return;
+        }
 
         $order_count = 0;
         $total_fees = 0.00;
 
-        foreach ( $orders as $order ) {
-            $fees = $order->get_total_fees();
+        foreach ($orders as $order) {
+            $fees = $order->get_fees();
 
-            if( $fees > 0 ) {
-                $order_count++;
-                $total_fees += $fees;
+            foreach ($fees as $fee) {
+                if ($fee->get_name() === 'Round Up Donation') {
+                    $order_count++;
+                    $total_fees += (float) $fee->get_total();
+                    break;
+                }
             }
         }
 
-        return array( 'total_orders' => $order_count, 'total_roundup' => floatval( $total_fees ) ); 
-    }
-
-    /**
-     * Retrieves an array of available months for generating a report.
-     *
-     * This function looks at orders with a `wc-completed` or `wc-processing` status. It then
-     * returns an array of the distinct months where such orders exist.
-     *
-     * @return array An array of strings in the format 'YYYY-MM'.
-     */
-    public function get_available_months(): array {
-        $order_query = new \WC_Order_Query;
-
-        $order_query->set( 'status', array( 'wc-completed', 'wc-processing' ) );
-        $order_query->set( 'order', 'ASC' );
-        $order_query->set( 'orderby', 'date_created' );
-
-        $orders = $order_query->get_orders();
-
-        $months_with_fees = [ date( 'Y-m' ) ];
-
-        foreach( $orders as $order ) {
-            $fees = $order->get_total_fees();
-            $date_created = date( 'Y-m', strtotime( $order->get_date_created() ) );
-
-            if( $fees > 0 && !in_array( $date_created, $months_with_fees ) ) {
-                $months_with_fees[] = $date_created;
-            }
-        }
-
-        return $months_with_fees;
-    }
-
-    /**
-     * Generates HTML for a form element to select available months and displays
-     * the total roundup amount for the selected month.
-     *
-     * This function retrieves the available months with roundup orders and 
-     * creates a dropdown menu for selecting a month. It also calculates the 
-     * total roundup amount for the selected month and displays it in a table.
-     *
-     * The selected month is determined by POST data or defaults to the first 
-     * available month. The total roundup is fetched from the database for the 
-     * selected month.
-     * 
-     * @return void
-     */
-    public function get_available_options( $field ) {
-        if( empty( $field ) && empty( $field['label_for'] ) && $field['label_for'] != 'report_month' ) {
-            return;
-        }
-
-        $options = [
-            'default' => [
-                'value' => date( 'F Y' ),
-                'label' => date( 'F Y' )
-            ]
+        $json_return['success'] = true;
+        $json_return['message'] = 'Report generated successfully.';
+        $json_return['data'] = [
+            'total_orders' => $order_count,
+            'total_roundup' => $total_fees,
         ];
-        
-        $available_months = $this->get_available_months();
 
-        if ( !empty( $available_months ) || is_array( $available_months ) ) {
-            foreach ( $available_months as $month ) {
-                $month = sanitize_text_field( $month );
-                $month_label = date( 'F Y', strtotime( $month ) );
-                $options['options'] = '<option value="' . esc_attr( $month ) . '">' . esc_html( $month_label ) . '</option>';
-            }
+        return $json_return; 
+    }
+
+    /**
+     * Retrieve an array of available report months, which is a list of
+     * months that have round up fee data associated with them.
+     *
+     * The results are grouped and summed by month, and ordered in descending
+     * order by month.
+     *
+     * @return array An array of available report months in the format 'YYYY-MM'.
+     */
+    public function get_available_report_months(): array
+    {
+        global $wpdb;
+
+        if(empty($wpdb)) {
+            return [
+                '' => 'No donations found'
+            ];
+        }
+
+        $order_items_table = $wpdb->prefix . 'woocommerce_order_items';
+        $orders_table = $wpdb->prefix . 'wc_orders';
+
+        // query months with round up fee data, grouped and summed
+        $results = $wpdb->get_col(
+            $wpdb->prepare(
+                "SELECT DISTINCT DATE_FORMAT(o.date_created_gmt, '%%Y-%%m')
+                FROM {$order_items_table} oi
+                INNER JOIN {$orders_table} o ON oi.order_id = o.id
+                WHERE oi.order_item_type = 'fee'
+                    AND oi.order_item_name = %s
+                    AND o.status IN ('wc-completed', 'wc-processing')
+                ORDER BY 1 DESC",
+                'Round Up Donation'
+            )
+        );
+
+        if (empty($results)) {
+            return [
+                '' => 'No donations found'
+            ];
+        }
+
+        $options = [];
+        foreach ($results as $year_month) {
+            $options[date('Y-m-d', strtotime($year_month . '-01'))] = date('F Y', strtotime($year_month));
         }
 
         return $options;
-}
+    }
 
     public function handle_query_roundupfee( $query, $query_vars ) {
         if ( ! empty( $query_vars['roundupfee'] ) ) {
             $query['meta_query'][] = array(
                 'key' => 'roundupfee',
-                'value' => esc_attr( $query_vars['customvar'] ),
+                'value' => esc_attr( $query_vars['roundupfee'] ),
             );
         }
     

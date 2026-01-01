@@ -1,12 +1,6 @@
 @charset "utf-8";
-
-// Variables
-@use "configs/var" as var;
-
-// Mixins
-@use "configs/mixin" as mixin;
-
-$plugin_name: "fkwdwcrfc";
+@use "configs/var" as *;
+@use "configs/mixin" as *;
 
 #dashboard-widgets {
     display: none;
@@ -46,7 +40,7 @@ $plugin_name: "fkwdwcrfc";
             font-size: 1rem;
             line-height: 2rem;
 
-            @include mixin.bp(desktop) {
+            @include bp(desktop) {
                 font-size: 1rem;
                 line-height: 1.4rem;
             }
@@ -98,13 +92,14 @@ $plugin_name: "fkwdwcrfc";
     }
 }
 
-.#{$plugin_name}-roundup-report-table {
+.#{$plugin_name}-report-results-table {
     background: #ffffff;
     border: 1px solid #c3c4c7;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
     clear: both;
     display: none;
     font-size: 1rem;
+    margin: 1rem 0;
     max-width: 768px;
     padding: 0.75rem;
     width: 100%;
