@@ -5,7 +5,7 @@ namespace Fkwd\Plugin\Wcrfc\Utils\Traits;
 /**
  * Trait Singleton
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 trait Singleton
 {

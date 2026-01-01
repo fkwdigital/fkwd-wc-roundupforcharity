@@ -5,7 +5,7 @@ namespace Fkwd\Plugin\Wcrfc\Admin;
 /**
  * Class Settings
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class Settings
 {

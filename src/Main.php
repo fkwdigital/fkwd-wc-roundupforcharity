@@ -10,7 +10,7 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Strings;
 /**
  * Class Main
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class Main
 {
@@ -104,7 +104,7 @@ class Main
     public function show_missing_plugin_notice()
     {
         if ( get_option( FKWD_PLUGIN_WCRFC_NAMESPACE . '_activation_failed' ) ) {
-            echo '<div class="error"><p>' . esc_html__( 'WooCommerce plugin is not active. FKWD WC Round Up For Charity requires the WooCommerce plugin to function properly. Please install and activate the WooCommerce plugin to activate functionality.', 'fkwd-wc-roundupforcharity' ) . '</p></div>';
+            echo '<div class="error"><p>' . esc_html__( 'WooCommerce plugin is not active. FKWD WC Round Up For Charity requires the WooCommerce plugin to function properly. Please install and activate the WooCommerce plugin to activate functionality.', 'fkwd-checkout-roundupforcharity' ) . '</p></div>';
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Fkwd\Plugin\Wcrfc\Admin\Settings;
 /**
  * Class Sanitizer
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class Sanitizer
 {

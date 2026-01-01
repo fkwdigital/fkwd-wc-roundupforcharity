@@ -6,11 +6,8 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Strings;
 
 /**
  * Class CheckoutClassic
- *
- * Handles round-up donation functionality for WooCommerce classic checkout.
- *
- * @since 0.1.0
- * @package fkwdwcrfc/src
+ * 
+ * @package Fkwd\Plugin\Wcrfc
  */
 class CheckoutClassic
 {
@@ -233,12 +230,12 @@ class CheckoutClassic
      */
     private function check_post_data_for_roundup(): ?bool
     {
-        // Nonce is verified by WooCommerce before cart fee calculation during checkout.
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies nonce in checkout flow.
         if (!isset($_POST['post_data'])) {
             return null;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies nonce in checkout flow.
         $post_data = sanitize_text_field(wp_unslash($_POST['post_data']));
 
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies nonce in checkout flow.

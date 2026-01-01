@@ -8,7 +8,7 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
 /**
  * Class Admin
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class Admin
 {

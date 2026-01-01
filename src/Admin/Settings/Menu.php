@@ -5,7 +5,7 @@ namespace Fkwd\Plugin\Wcrfc\Admin\Settings;
 /**
  * Class Menu
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class Menu
 {

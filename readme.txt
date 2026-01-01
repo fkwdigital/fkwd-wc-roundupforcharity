@@ -19,11 +19,11 @@ This currently does not support block checkout, but will be added in a future re
 
 == Installation ==
 
-1. Upload the entire `fkwd-wc-roundupforcharity` folder to the `/wp-content/plugins/` directory.
+1. Upload the entire `fkwd-checkout-roundupforcharity` folder to the `/wp-content/plugins/` directory.
 1. Activate the plugin through the **Plugins** screen (**Plugins > Installed Plugins**).
 1. You will find **Round Up Report** sub-menu under the WooCommerce main menu.
 
-For basic usage, have a look at the [plugin's website for documentation](https://fkwdigital.com/wordpress/fkwd-wc-roundupforcharity).
+For basic usage, have a look at the [plugin's website for documentation](https://fkwdigital.com/wordpress/fkwd-checkout-roundupforcharity).
 
 == Screenshots ==
 
@@ -34,7 +34,7 @@ For basic usage, have a look at the [plugin's website for documentation](https:/
 
 == Changelog ==
 
-For more information, see [Releases](https://fkwdigital.com/category/fkwd-wc-roundupforcharity/).
+For more information, see [Releases](https://fkwdigital.com/category/fkwd-checkout-roundupforcharity/).
 
 = 1.0.0 =
 

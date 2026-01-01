@@ -7,7 +7,7 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Strings;
 /**
  * Class Renderer
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class Renderer
 {
@@ -141,7 +141,8 @@ class Renderer
         }
 
         // phpcs:ignore WordPress.Security.NonceVerification.Missing -- There is no need for nonce verification here because it is not a form submission, but a page load.
-        $template_override_id = sanitize_file_name(wp_unslash($_GET['template']) ?? '');
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- There is no need for nonce verification here because it is not a form submission, but a page load.
+        $template_override_id = isset($_GET['template']) ? sanitize_file_name(wp_unslash($_GET['template'])) : '';
 
         // check if template override is requested
         if ($template_override_id) {

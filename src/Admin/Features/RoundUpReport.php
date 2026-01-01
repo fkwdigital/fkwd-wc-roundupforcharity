@@ -11,7 +11,7 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Strings;
 /**
  * Class RoundUpReport
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class RoundUpReport implements FeatureInterface
 {
@@ -78,8 +78,9 @@ class RoundUpReport implements FeatureInterface
 
             // set the menu specific settings and options for this feature
             $menu_type      = 'submenu';
-            $page_title     = __(FKWD_PLUGIN_WCRFC_NAME . ' Settings', 'fkwd-wc-roundupforcharity');
-            $menu_title     = __('Round Up Report', 'fkwd-wc-roundupforcharity');
+            // phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText -- Constant is used to keep the plugin name consistent
+            $page_title     = __(FKWD_PLUGIN_WCRFC_NAME . ' Settings', 'fkwd-checkout-roundupforcharity');
+            $menu_title     = __('Round Up Report', 'fkwd-checkout-roundupforcharity');
             $submenu_title  = '';
             $menu_icon      = '';
             $capability     = 'manage_woocommerce';

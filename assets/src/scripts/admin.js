@@ -1,7 +1,7 @@
 (function ($) {
 	"use strict";
 
-	let plugin_name = "fkwdwcrfc";
+	let plugin_name = "fkwd-checkout-roundupforcharity";
 	let class_name = "." + plugin_name;
 
 	const currencyFormatter = new Intl.NumberFormat("en-US", {
@@ -57,7 +57,7 @@
 
 		var data = {
 			action: plugin_name + "_roundup_report",
-			nonce: fkwdwcrfc_data.nonce,
+			nonce: fkwd-checkout-roundupforcharity_data.nonce,
 			month: $("#" + plugin_name + "-report-month-select-field").val(),
 		};
 
@@ -65,7 +65,7 @@
 		$(class_name + "-generate-report .spinner").addClass("is-active");
 
 		$.ajax({
-			url: fkwdwcrfc_data.ajax_url,
+			url: fkwd-checkout-roundupforcharity_data.ajax_url,
 			type: "POST",
 			data: data,
 			dataType: "json",

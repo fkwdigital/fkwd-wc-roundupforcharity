@@ -11,7 +11,7 @@
  * Author:            FKW Digital
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
- * Text Domain:       fkwd-wc-roundupforcharity
+ * Text Domain:       fkwd-checkout-roundupforcharity
  *
  * @package Fkwdwcrfc
  */
@@ -38,7 +38,7 @@ if ( ! defined( 'FKWD_PLUGIN_WCRFC_NAME' ) ) {
 }
 
 if ( ! defined( 'FKWD_PLUGIN_WCRFC_NAMESPACE' ) ) {
-    define( 'FKWD_PLUGIN_WCRFC_NAMESPACE', 'fkwdwcrfc' );
+    define( 'FKWD_PLUGIN_WCRFC_NAMESPACE', 'fkwd-checkout-roundupforcharity' );
 }
 
 if ( ! defined( 'FKWD_PLUGIN_WCRFC_DIR_PATH' ) ) {
@@ -57,8 +57,10 @@ if ( ! defined( 'FKWD_PLUGIN_WCRFC_DIR_URL' ) ) {
 if (version_compare(PHP_VERSION, '8.0', '<')) {
     add_action('admin_notices', function () {
         echo '<div class="error"><p>';
+
         echo sprintf(
-            esc_html__('FKWD WC Roundup for Charity requires PHP 8.0 or higher. You are running PHP %s. Please upgrade PHP to use this plugin.', 'fkwdwcrfc'),
+            // translators: %s: PHP version
+            __('FKWD WC Roundup for Charity requires PHP 8.0 or higher. You are running PHP %s. Please upgrade PHP to use this plugin.', 'fkwd-checkout-roundupforcharity'),
             PHP_VERSION
         );
         echo '</p></div>';
@@ -75,7 +77,9 @@ if (version_compare(PHP_VERSION, '8.0', '<')) {
 if (version_compare(get_bloginfo('version'), '6.8', '<')) {
     add_action('admin_notices', function () {
         echo '<div class="error"><p>';
-        echo esc_html__('FKWD WC Roundup for Charity requires WordPress 6.8 or higher. Please upgrade WordPress to use this plugin.', 'fkwdwcrfc');
+
+        // translators: %s: WordPress version
+        echo __('FKWD WC Roundup for Charity requires WordPress 6.8 or higher. Please upgrade WordPress to use this plugin.', 'fkwd-checkout-roundupforcharity');
         echo '</p></div>';
     });
 
@@ -94,7 +98,7 @@ if (file_exists($fkwdwcrfc_plugin_loader)) {
 } else {
     add_action('admin_notices', function () {
         echo '<div class="error"><p>';
-        echo esc_html__('FKWD WC Roundup for Charity has had a critical issue. Please contact <a href="mailto:support@fkwdigital.com">the plugin author</a> to resolve this issue.', 'fkwdwcrfc');
+        echo __('FKWD WC Roundup for Charity has had a critical issue. Please contact <a href="mailto:support@fkwdigital.com">the plugin author</a> to resolve this issue.', 'fkwd-checkout-roundupforcharity');
         echo '</p></div>';
     });
 }

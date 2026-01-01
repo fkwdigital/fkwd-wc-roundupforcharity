@@ -8,7 +8,7 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Security;
 /**
  * Class Report
  * 
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class RoundUpReport
 {
@@ -50,9 +50,11 @@ class RoundUpReport
         $json_data = [];
         $json_return = ['success' => $json_success, 'message' => $json_message, 'data' => $json_data];
         
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is handled in the trait Security.
         $this->validate_nonce($_POST);
 
         $data = $this->service_ajax->sanitize_ajax_dashboard_POST(
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is handled in the trait Security.
             $_POST,
             [
                 'month' => 'string',
@@ -187,12 +189,14 @@ class RoundUpReport
         $results = $wpdb->get_col(
             $wpdb->prepare(
                 "SELECT DISTINCT DATE_FORMAT(o.date_created_gmt, '%%Y-%%m')
-                FROM {$order_items_table} oi
-                INNER JOIN {$orders_table} o ON oi.order_id = o.id
+                FROM %s oi
+                INNER JOIN %s o ON oi.order_id = o.id
                 WHERE oi.order_item_type = 'fee'
                     AND oi.order_item_name = %s
                     AND o.status IN ('wc-completed', 'wc-processing')
                 ORDER BY 1 DESC",
+                $order_items_table,
+                $orders_table,
                 'Round Up Donation'
             )
         );
@@ -204,8 +208,9 @@ class RoundUpReport
         }
 
         $options = [];
+
         foreach ($results as $year_month) {
-            $options[date('Y-m-d', strtotime($year_month . '-01'))] = date('F Y', strtotime($year_month));
+            $options[gmdate('Y-m-d', strtotime($year_month . '-01'))] = gmdate('F Y', strtotime($year_month));
         }
 
         return $options;

@@ -8,10 +8,7 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
 /**
  * Class WooCommerce
  *
- * Main orchestrator for WooCommerce integration.
- *
- * @since 0.1.0
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class WooCommerce
 {
@@ -27,6 +24,5 @@ class WooCommerce
     public function __construct()
     {
         CheckoutClassic::get_instance();
-        //CheckoutBlock::get_instance();
     }
 }

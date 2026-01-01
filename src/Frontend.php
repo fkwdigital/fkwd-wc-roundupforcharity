@@ -6,7 +6,7 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
 /**
  * Class Frontend
  *
- * @package fkwdwcrfc/src
+ * @package Fkwd\Plugin\Wcrfc
  */
 class Frontend {
     use Singleton;

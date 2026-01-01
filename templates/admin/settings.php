@@ -12,7 +12,7 @@ $report_months_options = $data_class->get_available_report_months();
 			wp_nonce_field( $page_id . '-nonce', $page_id . '-nonce', false, 60 * 60 * 24 );
 			settings_fields( $page_id );
 			do_settings_sections( $page_id );
-			submit_button(__( 'Save Settings', 'fkwd-wc-roundupforcharity'), 'primary', 'save-settings' );
+			submit_button(__( 'Save Settings', 'fkwd-checkout-roundupforcharity'), 'primary', 'save-settings' );
 		?>
         <?php do_action( FKWD_PLUGIN_WCRFC_NAMESPACE . '_add_' . $page_id . '_form_html' ); ?>
 	</form>
@@ -21,7 +21,7 @@ $report_months_options = $data_class->get_available_report_months();
         <select id="<?php echo $this->clean_string(FKWD_PLUGIN_WCRFC_NAMESPACE . '-report-month-select-field', ['type' => 'attribute']); ?>">
             <option value="">Select Month</option>
             <?php foreach ( $report_months_options as $report_key => $report_month ) : ?>
-                <option value="<?php echo $report_key; ?>"><?php echo $report_month; ?></option>
+                <option value="<?php echo $this->clean_string($report_key, ['type' => 'date']); ?>"><?php echo $this->clean_string($report_month); ?></option>
             <?php endforeach; ?>
         </select>
         <button id="<?php echo $this->clean_string(FKWD_PLUGIN_WCRFC_NAMESPACE . '-generate-report', ['type' => 'attribute']); ?>" class="button button-secondary">Generate Report</button>
