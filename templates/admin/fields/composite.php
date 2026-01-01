@@ -1,15 +1,4 @@
-<?php
-/**
- * Composite field template
- *
- * @since 0.1.0
- * @package fkwdwcrfc
- */
-
-// prevent direct access
-if (!defined('ABSPATH')) {
-    exit;
-}
+<?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly 
 
 $field_id = esc_attr($args['label_for'] ?? $id);
 $field_label = $args['label'] ?? '';

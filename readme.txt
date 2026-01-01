@@ -1,15 +1,15 @@
-=== FKWD WC Round Up for Charity ===
+=== FKWD Checkout Roundup for Charity ===
 Contributors: geekmenina
 Donate link: https://fkwdigital.com/donate
 Tags: woocommerce, checkout, charity, round up
-Requires at least: 5.9
+Requires at least: 6.8
 Requires PHP: 8.0
 Tested up to: 6.9
 Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Adds a checkbox to the WooCommerce classic checkout to allow a user to optionally "round up" their order total to the nearest dollar. Report is generated that you can use to manually send to a charity at your choice of interval.
+Adds a checkbox to the WooCommerce classic checkout to allow a user to optionally "round up" their order total to the nearest dollar with a report to send manually afterwards.
 
 == Description ==
 

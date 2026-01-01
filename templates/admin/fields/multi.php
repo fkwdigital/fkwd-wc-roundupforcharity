@@ -1,10 +1,4 @@
-<?php
-/**
- * Multi field template
- *
- * @since 0.1.0
- * @package fkwdwcrfc
- */
+<?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly 
 
 $multi_value = is_array($value) ? $value : (!empty($value) ? [$value] : []);
 $field_type = $options['field_type'] ?? 'text';

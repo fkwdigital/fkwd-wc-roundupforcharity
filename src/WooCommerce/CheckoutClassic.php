@@ -2,6 +2,7 @@
 namespace Fkwd\Plugin\Wcrfc\WooCommerce;
 
 use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
+use Fkwd\Plugin\Wcrfc\Utils\Traits\Strings;
 
 /**
  * Class CheckoutClassic
@@ -14,6 +15,7 @@ use Fkwd\Plugin\Wcrfc\Utils\Traits\Singleton;
 class CheckoutClassic
 {
     use Singleton;
+    use Strings;
 
     /** @var string */
     private $session_key = FKWD_PLUGIN_WCRFC_NAMESPACE . '_round_up_fee';
@@ -87,23 +89,23 @@ class CheckoutClassic
     {
         $data = get_option(FKWD_PLUGIN_WCRFC_NAMESPACE . '_roundupreport_database_settings');
         $description = !empty($data['roundup_description']) 
-            ? wp_kses_post($data['roundup_description']) 
+            ? $data['roundup_description'] 
             : 'Round up to the nearest dollar for charity.';
 
         $checked = $this->is_round_up_enabled() ? 'checked="checked"' : '';
         $amount = $this->calculate_round_up_amount();
 
-        echo '<p class="form-row form-row-wide ' . esc_attr(FKWD_PLUGIN_WCRFC_NAMESPACE) . '-round-up-fee">
+        echo '<p class="form-row form-row-wide ' . $this->clean_string(FKWD_PLUGIN_WCRFC_NAMESPACE . '-round-up-fee', ['type' => 'attribute']) . '">
             <label>
                 <input type="checkbox" 
-                    name="' . esc_attr($this->session_key) . '" 
-                    id="' . esc_attr($this->session_key) . '_input" 
-                    value="1" ' . $checked . ' />
-                <span>' . $description . '</span>
+                    name="' . $this->clean_string($this->session_key, ['type' => 'attribute']) . '" 
+                    id="' . $this->clean_string($this->session_key, ['type' => 'attribute']) . '_input" 
+                    value="1" ' . $this->clean_string($checked, ['type' => 'html']) . ' />
+                <span>' . $this->clean_string($description) . '</span>
             </label>
             <input type="hidden" 
-                id="' . esc_attr(FKWD_PLUGIN_WCRFC_NAMESPACE) . '_roundup_amount" 
-                value="' . esc_attr($amount) . '" />
+                id="' . $this->clean_string(FKWD_PLUGIN_WCRFC_NAMESPACE . '_roundup_amount', ['type' => 'attribute']) . '" 
+                value="' . $this->clean_string($amount, ['type' => 'float']) . '" />
         </p>';
     }
 
@@ -117,10 +119,13 @@ class CheckoutClassic
      */
     public function save_roundup_in_session($posted_data)
     {
+        // Nonce is verified by WooCommerce before this hook fires.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies nonce in checkout flow.
         if (is_string($posted_data)) {
             parse_str($posted_data, $posted_data);
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies nonce in checkout flow.
         $enabled = isset($posted_data[$this->session_key]) && $posted_data[$this->session_key] === '1';
         
         $this->set_round_up_session($enabled);
@@ -228,11 +233,16 @@ class CheckoutClassic
      */
     private function check_post_data_for_roundup(): ?bool
     {
+        // Nonce is verified by WooCommerce before cart fee calculation during checkout.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies nonce in checkout flow.
         if (!isset($_POST['post_data'])) {
             return null;
         }
 
-        parse_str($_POST['post_data'], $parsed_data);
+        $post_data = sanitize_text_field(wp_unslash($_POST['post_data']));
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce verifies nonce in checkout flow.
+        parse_str($post_data, $parsed_data);
 
         if (!array_key_exists($this->session_key, $parsed_data)) {
             return null;

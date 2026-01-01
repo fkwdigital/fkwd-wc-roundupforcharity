@@ -2,6 +2,8 @@
 
 namespace Fkwd\Plugin\Wcrfc\Admin\Settings;
 
+use Fkwd\Plugin\Wcrfc\Utils\Traits\Strings;
+
 /**
  * Class Renderer
  *
@@ -9,6 +11,8 @@ namespace Fkwd\Plugin\Wcrfc\Admin\Settings;
  */
 class Renderer
 {
+    use Strings;
+
     /**
      * Renders a field based on provided arguments and type.
      *
@@ -94,7 +98,7 @@ class Renderer
         $html = '';
 
         // wrap field in a div for styling
-        $html .= '<div class="' . esc_attr(FKWD_PLUGIN_WCRFC_NAMESPACE) . '-fields fields-group ' . esc_attr(str_replace('_', '-', $id)) . '">';
+        $html .= '<div class="' . $this->clean_string(FKWD_PLUGIN_WCRFC_NAMESPACE . '-fields', ['type' => 'attribute']) . ' fields-group ' . $this->clean_string(str_replace('_', '-', $id), ['type' => 'attribute']) . '">';
 
         // render field type
         $field_template = FKWD_PLUGIN_WCRFC_DIR_PATH . 'templates/admin/fields/' . $type . '.php';
@@ -113,7 +117,7 @@ class Renderer
 
         $html .= '</div>';
 
-        echo $html;
+        echo $this->clean_string($html, ['type' => 'html']);
     }
 
     /**
@@ -136,9 +140,10 @@ class Renderer
             $data_class = $class_name::get_instance();
         }
 
-        // check if template override is requested
-        $template_override_id = sanitize_file_name($_GET['template'] ?? '');
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- There is no need for nonce verification here because it is not a form submission, but a page load.
+        $template_override_id = sanitize_file_name(wp_unslash($_GET['template']) ?? '');
 
+        // check if template override is requested
         if ($template_override_id) {
             $template_file = $template_path . $template_override_id . '.php';
             $template_id = $template_override_id;

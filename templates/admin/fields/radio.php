@@ -1,3 +1,4 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>            
             <div
                 class="<?php echo FKWD_PLUGIN_WCRFC_NAMESPACE; ?>-field <?php echo FKWD_PLUGIN_WCRFC_NAMESPACE; ?>-radio-field">
                 <div class="field field-<?php echo $name; ?>">
@@ -9,6 +10,6 @@
                     <input type="radio" id="<?php echo $fields[ 'id' ]; ?>_<?php echo $name; ?>_id"
                         name="<?php echo $page_database_id; ?>[<?php echo $fields[ 'id' ]; ?>][<?php echo $name; ?>]"
                         value="1" <?php if( $value == 1 ) { ?>checked<?php } ?> /> <label
-                        for="<?php echo $page_database_id; ?>[<?php echo $fields[ 'id' ]; ?>][<?php echo $name; ?>]"><?php echo esc_html_e( $subfield_label ); ?></label>
+                        for="<?php echo $page_database_id; ?>[<?php echo $fields[ 'id' ]; ?>][<?php echo $name; ?>]"><?php echo esc_html_e( $subfield_label, 'fkwd-wc-roundupforcharity' ); ?></label>
                 </div>
             </div>

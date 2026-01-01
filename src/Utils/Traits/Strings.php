@@ -10,22 +10,6 @@ namespace Fkwd\Plugin\Wcrfc\Utils\Traits;
 trait Strings
 {
     /**
-     * Translates the given text using a specified domain if the translation function is available.
-     *
-     * @param string $text The text to be translated.
-     * @param string $domain The domain for the translation.
-     * @return string The translated text if the translation function exists, otherwise returns the original text.
-     */
-    public function safe_translation($text, $domain)
-    {
-        if (did_action('init')) {
-            return __($text, $domain);
-        }
-
-        return $text;
-    }
-
-    /**
      * Generate a random secure string consisting of alphanumeric characters.
      *
      * @return string The generated string.
@@ -62,7 +46,7 @@ trait Strings
      * Validates and sanitizes what should be string values
      *
      * Options available:
-     * - type: alpha|alphanumeric|email|url|attribute|html
+     * - type: alpha|alphanumeric|int|float|absint|email|url|query_param|attribute|html|date
      * - length: int
      * - min_length: int
      * - max_length: int
@@ -146,13 +130,11 @@ trait Strings
 
         if (isset($options['strip_tags']) && $options['strip_tags'] == true) {
             if (is_bool($options['strip_tags'])) {
-                $string = strip_tags($string);
-
                 $string = wp_strip_all_tags($string);
             }
 
             if (is_array($options['strip_tags'])) {
-                $string = strip_tags($string, $options['strip_tags']);
+                $string = wp_strip_all_tags($string, $options['strip_tags']);
 
                 $string = wp_kses($string, $options['strip_tags']);
             }

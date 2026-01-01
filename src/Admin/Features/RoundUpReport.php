@@ -78,8 +78,8 @@ class RoundUpReport implements FeatureInterface
 
             // set the menu specific settings and options for this feature
             $menu_type      = 'submenu';
-            $page_title     = $this->safe_translation(FKWD_PLUGIN_WCRFC_NAME . ' Settings', FKWD_PLUGIN_WCRFC_NAMESPACE);
-            $menu_title     = $this->safe_translation('Round Up Report', FKWD_PLUGIN_WCRFC_NAMESPACE);
+            $page_title     = __(FKWD_PLUGIN_WCRFC_NAME . ' Settings', 'fkwd-wc-roundupforcharity');
+            $menu_title     = __('Round Up Report', 'fkwd-wc-roundupforcharity');
             $submenu_title  = '';
             $menu_icon      = '';
             $capability     = 'manage_woocommerce';
